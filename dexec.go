@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	ac "github.com/PeterHickman/ansi_colours"
+	"github.com/PeterHickman/toolbox"
 	"os"
 	"os/exec"
 	"sort"
@@ -98,24 +99,6 @@ func choose_command(title string, exited bool) string {
 	return o[i]
 }
 
-func stop_start_restart(ssr string, id string) {
-	cmd := exec.Command("docker", ssr, id)
-	_, err := cmd.Output()
-
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-}
-
-func shell(id string) {
-	cmd := exec.Command("docker", "exec", "-it", id, "bash")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	_ = cmd.Run() // add error checking
-}
-
 func main() {
 	cs := fetch_containers()
 
@@ -129,8 +112,8 @@ func main() {
 
 	switch cmd {
 	case "stop", "start", "restart":
-		stop_start_restart(cmd, c.id)
+		toolbox.Command("docker " + cmd + " " + c.id)
 	case "shell":
-		shell(c.id)
+		toolbox.Command("docker exec -it " + c.id + " bash")
 	}
 }
