@@ -1,12 +1,13 @@
 #!/bin/sh
 
 BINARY='/usr/local/bin'
+APP=dexec
 
-echo "Building dexec"
-go build dexec.go
+echo "Building $APP"
+go build -ldflags="-s -w" $APP.go
 
-echo "Installing dexec to $BINARY"
-install -v dexec $BINARY
+echo "Installing $APP to $BINARY"
+install $APP $BINARY
 
 echo "Removing the build"
-rm dexec
+rm $APP
